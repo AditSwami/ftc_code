@@ -56,18 +56,39 @@ public class Driver_setting  {
     // Set equal power to all wheels (for forward/backward movement)
     public void power(double output) {
         topLeftDriveMotor.setPower(-output);
-        bottomLeftDriveMotor.setPower(-output);
-        topRightDriveMotor.setPower(output);
+        bottomLeftDriveMotor.setPower(output);
+        topRightDriveMotor.setPower(-output);
         bottomRightDriveMotor.setPower(output);
+    }
+
+    public void turnLeft(double output) {
+        topLeftDriveMotor.setPower(output);
+        bottomLeftDriveMotor.setPower(-output);
+        topRightDriveMotor.setPower(-output);
+        bottomRightDriveMotor.setPower(output);
+    }
+
+    public void turnRight(double output) {
+        topLeftDriveMotor.setPower(-output);
+        bottomLeftDriveMotor.setPower(output);
+        topRightDriveMotor.setPower(output);
+        bottomRightDriveMotor.setPower(-output);
+    }
+
+    public void strafeLeft(double output) {
+        topLeftDriveMotor.setPower(output/2);
+        bottomLeftDriveMotor.setPower(output);
+        topRightDriveMotor.setPower(-output/2);
+        bottomRightDriveMotor.setPower(-output);
     }
 
     // Method to move robot using joystick inputs for mecanum drive
     public void moveRobot(double leftStickY, double leftStickX, double rightStickX) {
         // Calculate motor power based on joystick inputs
-        double topLeftPower = (leftStickY + leftStickX + rightStickX);
-        double bottomLeftPower = leftStickY - leftStickX + rightStickX;
-        double topRightPower = (-leftStickY - leftStickX - rightStickX);
-        double bottomRightPower = -leftStickY + leftStickX - rightStickX;
+        double topLeftPower = leftStickY + leftStickX + rightStickX;
+        double bottomLeftPower = -leftStickY + leftStickX - rightStickX;
+        double topRightPower = (leftStickY - leftStickX - rightStickX);
+        double bottomRightPower = -leftStickY - leftStickX + rightStickX;
 
         // Set motor power
         topLeftDriveMotor.setPower(topLeftPower);

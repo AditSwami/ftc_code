@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class SlideControl {
+public class Auto_Slides {
     public final double COUNTS_PER_INCH = 537.6;
     public static double kP = 0.01;
     public static double kI = 0;
@@ -22,7 +22,7 @@ public class SlideControl {
     public int minposH;
     double safety_distance = 5;
 
-    public SlideControl(int maxPos, int minPos, int maxposH, int minposH, double kP, double kI, double kD, double kF) {
+    public Auto_Slides(double kP, double kI, double kD, double kF) {
         this.minPos = minPos;
         this.maxPos = maxPos;
         this.maxposH = maxposH;
@@ -57,9 +57,9 @@ public class SlideControl {
             rightVSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
             leftVSlideMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            //hMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kP, kI, kD, kF));
-            //rightVSlideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kP, kI, kD, kF));
-            //leftVSlideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kP, kI, kD, kF));
+            hMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kP, kI, kD, kF));
+            rightVSlideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kP, kI, kD, kF));
+            leftVSlideMotor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(kP, kI, kD, kF));
         } catch (Exception e) {
             telemetry.addData("Motor Configuration Error", e.getMessage());
         }
@@ -79,52 +79,8 @@ public class SlideControl {
         hMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void moveHSlides(boolean dPadUp, boolean dpaddown, double power, Telemetry telemetry) {
-        double currentPos = hMotor.getCurrentPosition();
-        telemetry.addData("H Slide Current Position", currentPos);
-        if (dPadUp) {
-            hMotor.setPower(power);
-            telemetry.addData("H Slide Status", "Moving");
-        } else if (dpaddown){
-            hMotor.setPower(-power);
-        }else {
-            hMotor.setPower(0);
-            telemetry.addData("H Slide Status", "Stopped");
-        }
-        telemetry.update();
-    }
-
-    public void moveVSlide(boolean dPadUp, boolean dPadDown, double power, Telemetry telemetry) {
-        double currentPosR = rightVSlideMotor.getCurrentPosition();
-        double currentPosL = leftVSlideMotor.getCurrentPosition();
-
-        telemetry.addData("Right V Slide Position", currentPosR);
-        telemetry.addData("Left V Slide Position", currentPosL);
-
-        // Move up if dPadUp is pressed and both motors are within the safe range
-        if (dPadUp && currentPosR < maxPos && currentPosL < maxPos) {
-            rightVSlideMotor.setPower(-power);
-            leftVSlideMotor.setPower(power);
-            telemetry.addData("Vertical Slide Status", "Moving Up");
-        }
-        // Move down if dPadDown is pressed
-        else if (dPadDown && -currentPosR > minPos && currentPosL > minPos) {
-            rightVSlideMotor.setPower(power);
-            leftVSlideMotor.setPower(-power);
-            telemetry.addData("Vertical Slide Status", "Moving Down");
-        }
-        // Stop the slides if neither button is pressed
-        else {
-            rightVSlideMotor.setPower(0);
-            leftVSlideMotor.setPower(0);
-            telemetry.addData("Vertical Slide Status", "Stopped");
-        }
-
-        telemetry.update();
-    }
-
     public void moveVSlideAuto(int targetPos, Telemetry telemetry) {
-        rightVSlideMotor.setTargetPosition(targetPos);
+        rightVSlideMotor.setTargetPosition(-targetPos);
         leftVSlideMotor.setTargetPosition(targetPos);
         rightVSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftVSlideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
