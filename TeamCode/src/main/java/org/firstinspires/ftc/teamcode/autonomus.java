@@ -1,57 +1,77 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.localization.Pose;
+import com.pedropathing.pathgen.BezierCurve;
+import com.pedropathing.pathgen.BezierLine;
+import com.pedropathing.pathgen.Path;
+import com.pedropathing.pathgen.PathChain;
+import com.pedropathing.pathgen.Point;
+import com.pedropathing.util.Constants;
+import com.pedropathing.util.Timer;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.PedroPathing.constants.FConstants;
+import org.firstinspires.ftc.teamcode.PedroPathing.constants.LConstants;
 
-@Autonomous (name = "myAuto")
-public class autonomus extends LinearOpMode {
-    Driver_setting drive = new Driver_setting();
-    Auto_Slides slides = new Auto_Slides(5, 0.1, 0.1, 5);
-    Intake_settings intake = new Intake_settings();
-    ElapsedTime timer = new ElapsedTime();
+
+@Autonomous (name = "myAuto", group = "Actual Auto")
+public class autonomus extends OpMode {
+    private Follower follower;
+    private int pathState;
+    private final Pose startPose = new Pose(95,24,Math.toRadians(270));
+    private final Pose scorePose = new Pose(14,27,Math.toRadians(270));
+    private final Pose rallyPose = new Pose(8,15,Math.toRadians(270));
+    private final Pose pushPose1 = new Pose (20,4, Math.toRadians(270));
+    private final Pose endPushPose1 = new Pose(10,15, Math.toRadians(270));
+    private final Pose pushPose2 = new Pose (10,15,Math.toRadians(270));
+    private final Pose endPushPose2 = new Pose(10,15, Math.toRadians(270));
+    private final Pose pushPose3 = new Pose(10,20,Math.toRadians(270));
+    private final Pose scorePose1 = new Pose(10,20,Math.toRadians(270));
+    private final Pose scorePose2 = new Pose(10,20,Math.toRadians(270));
+    private final Pose scorePose3 = new Pose(10,20,Math.toRadians(270));
+    private final Pose scorePose4 = new Pose(10,20,Math.toRadians(270));
+
+    private Path scorePreload;
+    private PathChain rally, push1, endPush1, push2, endPush2, push3,score1,score2,score3,score4;
+
+    public void buildPaths(){
+        scorePreload = new Path(new BezierLine(new Point(startPose),new Point(scorePose)));
+        scorePreload.setLinearHeadingInterpolation(startPose.getHeading(),scorePose.getHeading());
+
+        rally = follower.pathBuilder()
+                .addPath(new BezierCurve(new Point(scorePose), new Point(rallyPose)))
+                .build();
+
+        push1 = follower.pathBuilder()
+                .addPath(new BezierCurve(new Point(rallyPose), new Point(pushPose1)))
+                .build();
+
+        endPush1 = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(pushPose1), new Point(endPushPose1)))
+                .build();
+
+        push2 = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(endPushPose1), new Point(pushPose2)))
+                .build();
+
+        endPush2 = follower.pathBuilder()
+                .addPath(new BezierLine(new Point(pushPose2), new Point(endPushPose2)))
+                .build();
+
+
+    }
+
     @Override
-    public void runOpMode() {
-        drive.init(hardwareMap);
-        slides.init(hardwareMap,telemetry);
-        intake.init(":LefttServo",
-                "rightServo",
-                "clawServo",
-                "armServo",
-                "intakeBack",
-                "claw2", hardwareMap,
-                8);
+    public void init() {
 
-        waitForStart();
-        timer.reset();
-        while(timer.milliseconds()<600){
-            intake.clawRotateUp();
-            intake.autoclawrelease();
-            drive.power(1);
-        }
-        timer.reset();
-        while (timer.milliseconds()<850){
-            slides.moveVSlideAuto(20, telemetry);
-            intake.autoclawgrab();
-        }
-        timer.reset();
-        while(timer.milliseconds()<500){
-            drive.power(1);
-        }
-        timer.reset();
-        while (timer.milliseconds()<850){
-            drive.turnLeft(1);
-        }
-        timer.reset();
-        while(timer.milliseconds()<650){
-            drive.power(-1);
-            slides.moveVSlideAuto(1700, telemetry);
-        }
-        timer.reset();
-        drive.stopMotors();
+    }
+
+    @Override
+    public void loop() {
+
     }
 }

@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class specimen extends OpMode {
     public Telemetry Telemetry;
     Driver_setting driver = new Driver_setting();
-    SlideControl slides = new SlideControl(2000,0,600, 0, 0.01,0.1,0.0,0.0);
+    SlideControl slides = new SlideControl(3000,0,600, 0, 0.01,0.1,0.0,0.0);
     Intake_settings intake = new Intake_settings();
     boolean tf = true;
 
@@ -34,7 +34,7 @@ public class specimen extends OpMode {
         //release sample
         if( gamepad1.left_bumper){
             if (tf){
-                intake.releaseSample(0.01);
+                intake.releaseSample(0.00);
                 tf = false;
             }
         } else tf = true;

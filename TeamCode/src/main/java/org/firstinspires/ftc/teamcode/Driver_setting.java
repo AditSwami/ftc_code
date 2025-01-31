@@ -85,10 +85,10 @@ public class Driver_setting  {
     // Method to move robot using joystick inputs for mecanum drive
     public void moveRobot(double leftStickY, double leftStickX, double rightStickX) {
         // Calculate motor power based on joystick inputs
-        double topLeftPower = leftStickY + leftStickX + rightStickX;
-        double bottomLeftPower = -leftStickY + leftStickX - rightStickX;
-        double topRightPower = (leftStickY - leftStickX - rightStickX);
-        double bottomRightPower = -leftStickY - leftStickX + rightStickX;
+        double topLeftPower = leftStickY - leftStickX - rightStickX;
+        double bottomLeftPower = -leftStickY - leftStickX + rightStickX;
+        double topRightPower = (leftStickY + leftStickX + rightStickX);
+        double bottomRightPower = -leftStickY + leftStickX - rightStickX;
 
         // Set motor power
         topLeftDriveMotor.setPower(topLeftPower);
