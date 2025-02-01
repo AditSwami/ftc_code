@@ -16,6 +16,8 @@ import org.firstinspires.ftc.teamcode.PedroPathing.constants.LConstants;
 
 @Autonomous (name = "myAuto", group = "Actual Auto")
 public class autonomus extends OpMode {
+    Auto_Slides slides = new Auto_Slides(0,1,2,3);
+    Intake_settings intake = new Intake_settings();
     private Follower follower;
     private int pathState;
 
@@ -115,7 +117,9 @@ public class autonomus extends OpMode {
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy()) {
                     /* Score Preload */
-
+                    intake.clawRotateDown();
+                    slides.moveVSlideAuto(1000, telemetry);
+                    intake.autoclawrelease();
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
                     follower.followPath(getToPush,true);
                     setPathState(2);
@@ -125,7 +129,8 @@ public class autonomus extends OpMode {
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup1Pose's position */
                 if(!follower.isBusy()) {
                     /* Grab Sample */
-
+                    slides.moveVSlideAuto(0,telemetry);
+                    intake.clawRotateUpSpecimen();
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
                     follower.followPath(push1,true);
                     setPathState(3);
@@ -154,8 +159,9 @@ public class autonomus extends OpMode {
             case 5:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy()) {
-                    /* Score Sample */
-
+                    slides.moveVSlideAuto(0,telemetry);
+                    intake.autoClawGrab();
+                    intake.clawRotateDown();
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
                     follower.followPath(getToScore,true);
                     setPathState(6);
@@ -165,7 +171,9 @@ public class autonomus extends OpMode {
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the pickup3Pose's position */
                 if(!follower.isBusy()) {
                     /* Grab Sample */
-
+                    slides.moveVSlideAuto(1000, telemetry);
+                    intake.autoclawrelease();
+                    intake.clawRotateUpSpecimen();
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are scoring the sample */
                     follower.followPath(score1, true);
                     setPathState(7);
@@ -175,6 +183,9 @@ public class autonomus extends OpMode {
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy()) {
                     /* Score Sample */
+                    slides.moveVSlideAuto(0,telemetry);
+                    intake.autoClawGrab();
+                    intake.clawRotateDown();
 
                     /* Since this is a pathChain, we can have Pedro hold the end point while we are parked */
                     follower.followPath(getScore2,true);
@@ -184,21 +195,33 @@ public class autonomus extends OpMode {
             case 8:
                 /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
                 if(!follower.isBusy()) {
+                    slides.moveVSlideAuto(1000, telemetry);
+                    intake.autoclawrelease();
+                    intake.clawRotateUpSpecimen();
                     follower.followPath(score2, true);
                     setPathState(9);
                 }
                 break;
             case 9:
                 if(!follower.isBusy()) {
+                    slides.moveVSlideAuto(0,telemetry);
+                    intake.autoClawGrab();
+                    intake.clawRotateDown();
                     follower.followPath(getScore3, true);
                     setPathState(10);
                 }
+                break;
 
             case 10:
                 if(!follower.isBusy()) {
+                    slides.moveVSlideAuto(1000, telemetry);
+                    intake.autoclawrelease();
+                    intake.clawRotateUpSpecimen();
                     follower.followPath(score3, true);
                     setPathState(11);
                 }
+                break;
+
             case 11:
                 if(!follower.isBusy()) {
                     setPathState(-1);
@@ -212,6 +235,14 @@ public class autonomus extends OpMode {
 
     @Override
     public void init() {
+        slides.init(hardwareMap, telemetry);
+        intake.init(":LefttServo",
+                "rightServo",
+                "clawServo",
+                "armServo",
+                "intakeBack",
+                "claw2", hardwareMap,
+                8);
         Constants.setConstants(FConstants.class, LConstants.class);
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startingPose);

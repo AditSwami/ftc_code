@@ -62,13 +62,13 @@ public class Intake_settings {
     }
 
     public void clawRotateUpSpecimen(){
-        clawRotateR.setPosition(0.75);
-        clawRotateL.setPosition(0.25);
+        clawRotateR.setPosition(0);
+        clawRotateL.setPosition(1);
     }
 
     public void clawRotateDown(){
-        clawRotateR.setPosition(0.5);
-        clawRotateL.setPosition(0.5);
+        clawRotateR.setPosition(1);
+        clawRotateL.setPosition(0);
     }
 
     public void clawgrab(boolean dpad) {
@@ -87,5 +87,8 @@ public class Intake_settings {
     public void autoclawrelease(){
 
             clawServ.setPosition(0);
+    }
+    public void autoClawGrab() {
+        clawServ.setPosition(0.4);
     }
 }
